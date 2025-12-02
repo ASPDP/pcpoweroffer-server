@@ -45,6 +45,7 @@ func (s *server) SendPassword(ctx context.Context, req *pb.PasswordRequest) (*pb
 	}
 
 	// Validate input: non-repeated numbers, min 4
+	log.Printf("Received password attempt: %s", req.Password)
 	if !isValidPasswordFormat(req.Password) {
 		return &pb.PasswordResponse{Success: false, Message: "Invalid password format"}, nil
 	}
@@ -57,7 +58,7 @@ func (s *server) SendPassword(ctx context.Context, req *pb.PasswordRequest) (*pb
 			return &pb.PasswordResponse{Success: false, Message: "Password correct, but hardware error"}, nil
 		}
 		// Reset fail count on success? The requirement says "when service restarted tryies must be reset to 0".
-		// It doesn't explicitly say to reset on success, but usually that's implied. 
+		// It doesn't explicitly say to reset on success, but usually that's implied.
 		// However, strict reading: "when password mismatched more thn 10 times in day - exit service".
 		// If I succeed, I probably shouldn't count towards the 10 failures.
 		// I won't reset failCount on success unless asked, but I won't increment it either.
@@ -146,6 +147,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}
+	log.Printf("Loaded password from config: %s", pwd)
 
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
