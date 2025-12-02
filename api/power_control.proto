@@ -4,15 +4,32 @@ package powercontrol;
 
 option go_package = "pcpoweroffer-server/api/gen;powercontrol";
 
+// PowerControl service manages the access to the PC power hardware.
 service PowerControl {
+  // SendPassword validates the password and triggers the power action if correct.
+  //
+  // Logic Rules:
+  // 1. Password must contain only digits (0-9).
+  // 2. Minimum length is 4 digits.
+  // 3. No digit can be repeated (e.g., "1231" is invalid).
+  // 4. Rate Limiting: If the password is mismatched more than 10 times in a day,
+  //    the service will lock/exit and must be manually restarted.
+  //
+  // Hardware Action:
+  // If validation succeeds, the server sends the character '0' to /dev/ttyACM0 
+  // configured as 9600 baud, 8 data bits, No parity, 1 stop bit (8N1).
   rpc SendPassword (PasswordRequest) returns (PasswordResponse);
 }
 
 message PasswordRequest {
+  // The password string to validate.
+  // Example: "0192837465"
   string password = 1;
 }
 
 message PasswordResponse {
+  // True if the password was correct and action was taken.
   bool success = 1;
+  // Descriptive message (e.g., "Access granted", "Incorrect password", "Service locked").
   string message = 2;
 }
