@@ -1,0 +1,13 @@
+# Binaries
+pcpoweroffer-server
+
+# Config (don't track production config, but maybe track example?)
+# config.cfg
+
+# Generated code (optional, but good if we want to avoid installing protoc on server)
+# But since we are installing protoc in install.sh, we can ignore it or track it.
+# Let's track it for now so the repo is complete.
+# api/gen/
+
+# IDE
+.vscode/

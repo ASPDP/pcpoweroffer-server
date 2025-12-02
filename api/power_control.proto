@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package powercontrol;
+
+option go_package = "pcpoweroffer-server/api/gen;powercontrol";
+
+service PowerControl {
+  rpc SendPassword (PasswordRequest) returns (PasswordResponse);
+}
+
+message PasswordRequest {
+  string password = 1;
+}
+
+message PasswordResponse {
+  bool success = 1;
+  string message = 2;
+}
